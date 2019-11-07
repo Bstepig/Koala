@@ -14,8 +14,6 @@ class ProductTableWidget(QFrame):
         self.initUI()
 
     def initUI(self):
-        self.setStyleSheet(get_styles('style'))
-        self.setStyleSheet(get_styles('product-table'))
         self.layout = QVBoxLayout()
         self.layout.setContentsMargins(10, 13, 10, 0)
         self.layout.setSpacing(0)
@@ -38,6 +36,8 @@ class ProductTableWidget(QFrame):
         self.products_layout.addStretch(1)
 
         self.setLayout(self.layout)
+        self.setStyleSheet(get_styles('style'))
+        self.setStyleSheet(get_styles('product-table'))
 
     # def update_cart(self):
     #     for p in cart:

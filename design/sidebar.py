@@ -20,22 +20,19 @@ class SidebarWidget(QFrame):
         self.layout = QVBoxLayout()
         self.products = QWidget()
         self.scroll = QScrollArea()
+        self.sell_btn = QPushButton()
 
         self.initUI()
 
     def initUI(self):
-        load_fonts()
-        self.setStyleSheet(get_styles('style'))
-        self.setStyleSheet(get_styles('sidebar'))
 
         self.title.setObjectName('sidebar_title')
         self.title.setText('Товары')
 
         self.plus.setObjectName('plus')
         self.plus.setText('+')
-        # self.plus.setFixedWidth(20)
 
-        self.header.setContentsMargins(0, 0, 0, 0)
+        self.header.setContentsMargins(0, 0, 0, 17)
         self.header.setSpacing(0)
         self.header.addWidget(self.title)
         self.header.addStretch(1)
@@ -45,7 +42,7 @@ class SidebarWidget(QFrame):
         self.search.setObjectName('search')
         self.search.setPlaceholderText('Поиск...')
 
-        self.layout.setContentsMargins(0, 0, 0, 0)
+        self.layout.setContentsMargins(10, 15, 10, 0)
         self.layout.setSpacing(0)
 
         self.layout.addLayout(self.header)
@@ -62,9 +59,16 @@ class SidebarWidget(QFrame):
 
         self.products_layout.addStretch(1)
 
+        self.sell_btn.setText('Оплатить')
+
+        self.layout.addWidget(self.sell_btn)
+
         self.setFixedWidth(300)
         self.setLayout(self.layout)
         self.setObjectName('sidebar')
+        load_fonts()
+        self.setStyleSheet(get_styles('style'))
+        self.setStyleSheet(get_styles('sidebar'))
 
 
 if __name__ == '__main__':

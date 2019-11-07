@@ -1,0 +1,36 @@
+* {
+    font-size: 14px;
+}
+
+QLabel {
+    font-weight: 500;
+}
+
+
+QPushButton {
+    border: 2px solid #E6E6E6;
+    color: #363636;
+    font-weight: 600;
+    font-size: 12px;
+    border-radius: 15px;
+    padding: 5px 10px;
+    height: 16px;
+}
+
+QPushButton:hover {
+    background: #363636;
+    border-color: #363636;
+    color: #FFFFFF;
+}
+
+#create {
+    background: #10DE91;
+    border-color: #10DE91;
+    color: #FFFFFF;
+}
+
+#cancel:hover {
+    background: #F12944;
+    border-color: #F12944;
+    color: #FFFFFF;
+}

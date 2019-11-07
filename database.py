@@ -11,6 +11,7 @@ from models import Sale
 from definitions import ROOT_DIR
 
 con: Connection
+dbname: str
 
 
 def execute(*args, **kwargs):
@@ -27,6 +28,8 @@ def execute(*args, **kwargs):
 
 def connect(path: str):
     global con
+    global dbname
+    dbname = path
     print(f'Connecting to {path}...')
     con = sqlite3.connect(f'{ROOT_DIR}\\db\\{path}.db')
 
@@ -71,7 +74,7 @@ def create_product_images_table():
 
 
 def add_product_image(product_id: int, image: bytes):
-    execute("""INSERT INTO product_images (product_id, image) VALUES (?, ?)""", product_id, image)
+    execute("""INSERT INTO product_images (product_id, image) VALUES (?, ?)""", (product_id, image))
 
 
 def create_cart_table():
@@ -136,10 +139,11 @@ def add_product(name: str = "", description: str = "", count: int = 0, image: st
                 selling_price: float = 0, units: str = "шт", barcode: int = 0):
     image = open(image, 'rb').read()
     execute(
-        """INSERT INTO products (name, description, count, image, purchase_price, selling_price, units, barcode)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        """, (name, description, count, image, purchase_price, selling_price, units, barcode)
+        """INSERT INTO products (name, description, count, purchase_price, selling_price, units, barcode)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, (name, description, count, purchase_price, selling_price, units, barcode)
     )
+    add_product_image(get_last_id(), image)
 
 
 def update_product(_id: int, name: str = "", description: str = "", count: int = 0, image: str = "",
@@ -159,7 +163,7 @@ def delete_product(_id: int):
     execute("""DELETE FROM products WHERE id = ?""", _id)
 
 
-def get_last_id():
+def get_last_id() -> int:
     global con
     c = con.cursor()
     c.execute(

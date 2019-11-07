@@ -9,5 +9,4 @@
     border: none;
     background: transparent;
     color: #474747;
-    cursor: pointer;
 }

@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QFrame, QPushButton, QLabel, QHBoxLayout
 from utils import get_styles
 
 
-class Navbar(QFrame):
+class NavbarWidget(QFrame):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
 
@@ -42,14 +42,14 @@ class Navbar(QFrame):
 
         self.layout.addStretch(1)
 
-        self.user.setText("Николай Анатольевич ")
+        self.user.setText("CASHIER NAME")
         self.user.setObjectName('user')
         self.layout.addWidget(self.user)
 
         self.layout.addStretch(1)
 
         self.shop.setObjectName('shop')
-        self.shop.setText("Топшоп")
+        self.shop.setText("SHOP NAME")
         self.layout.addWidget(self.shop)
 
         self.setLayout(self.layout)

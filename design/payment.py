@@ -1,13 +1,13 @@
-from PyQt5.QtWidgets import QFrame, QPushButton, QLabel, QHBoxLayout, QLineEdit, QVBoxLayout
+from PyQt5.QtWidgets import QFrame, QPushButton, QLabel, QHBoxLayout, QLineEdit, QVBoxLayout, QSpinBox
 
 
-class Navbar(QFrame):
+class PaymentWidget(QFrame):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
 
         self.to_pay_title = QLabel()
         self.surrender_title = QLabel()
-        self.to_pay_value = QLineEdit()
+        self.to_pay_value = QSpinBox()
         self.surrender_value = QLabel()
         self.to_pay_currency = QLabel()
         self.surrender_currency = QLabel()
@@ -28,6 +28,8 @@ class Navbar(QFrame):
         self.surrender_currency.setObjectName('surrender_currency')
         self.total_title.setObjectName('total_title')
         self.total_value.setObjectName('total_value')
+
+        self.to_pay_value.setMaximum(2147483647)
 
         self.to_pay_title.setText('К оплате')
         self.surrender_title.setText('Сдача')
@@ -53,4 +55,7 @@ class Navbar(QFrame):
         total_layout.addWidget(self.total_title)
         total_layout.addWidget(self.total_value)
 
-        layout.addLayout()
+        layout.addLayout(to_pay_layout)
+        layout.addLayout(surrender_layout)
+
+        self.setLayout(layout)

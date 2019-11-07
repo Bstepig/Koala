@@ -21,11 +21,6 @@ class ProductTableHeaderWidget(QFrame):
         for c in columns:
             label = QLabel()
             label.setText(c[0])
-            # label.setStyleSheet("""
-            #     font-size: 14px;
-            #     color: #474747;
-            #     text-align: center;
-            # """)
             header.addWidget(label, c[1])
 
         self.setLayout(header)

@@ -3,13 +3,14 @@
 import sys
 
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtWidgets import QVBoxLayout, QWidget, QApplication, QFileDialog, QPushButton, QHBoxLayout
+from PyQt5.QtWidgets import QVBoxLayout, QWidget, QApplication, QFileDialog, QPushButton, QHBoxLayout, QDialog
 
 import database
+from utils import get_styles
 from widgets.image import ImageWidget
 
 
-class CreateProduct(QWidget):
+class CreateProduct(QDialog):
     closed = QtCore.pyqtSignal()
 
     def __init__(self, parent=None):
@@ -18,12 +19,14 @@ class CreateProduct(QWidget):
         self.initUI()
 
     def initUI(self):
+        self.setStyleSheet(get_styles('style'))
+        self.setStyleSheet(get_styles('create-product'))
+
         self.setObjectName("add_product")
-        # self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
-        self.setFixedSize(300, 260)
+        self.setMinimumWidth(450)
 
         self.layout = QVBoxLayout(self)
-        self.layout.setContentsMargins(10, 10, 10, 10)
+        self.layout.setContentsMargins(40, 40, 40, 40)
         self.layout.setObjectName("layout")
 
         inputs = (
@@ -60,8 +63,8 @@ class CreateProduct(QWidget):
 
             line = QtWidgets.QHBoxLayout()
             line.setObjectName(f"{i}_line")
-            line.addWidget(title)
-            line.addWidget(line_edit)
+            line.addWidget(title, 1)
+            line.addWidget(line_edit, 1)
 
             self.layout.addLayout(line)
 
@@ -77,17 +80,33 @@ class CreateProduct(QWidget):
 
         self.layout.addLayout(self.image_layout)
 
-        # self.line_edits['barcode'].setMinimum(000000000000)
-        # self.line_edits['barcode'].setMaximum(999999999999)
+        self.line_edits['barcode'].setMaximum(999999)
+        self.line_edits['count'].setMaximum(999999999)
+        self.line_edits['purchase_price'].setMaximum(999999999)
+        self.line_edits['selling_price'].setMaximum(999999999)
 
-        self.line_edits['barcode'].setValue(database.get_last_id() + 1)
+        # self.line_edits['barcode'].setValue(database.get_last_id() + 1)
 
-
+        line = QtWidgets.QHBoxLayout()
         self.create = QtWidgets.QPushButton(self)
         self.create.setObjectName("create")
         self.create.setText('Добавить')
-        self.layout.addWidget(self.create)
+
+
+        self.cancel = QtWidgets.QPushButton(self)
+        self.cancel.setObjectName("cancel")
+        self.cancel.setText('Отмена')
+
         self.create.clicked.connect(self.addProduct)
+        self.cancel.clicked.connect(self.cancel_add)
+
+        line.addStretch(1)
+        line.addWidget(self.create)
+        line.addWidget(self.cancel)
+
+        self.layout.addSpacing(20)
+
+        self.layout.addLayout(line)
 
         self.setLayout(self.layout)
         QtCore.QMetaObject.connectSlotsByName(self)
@@ -103,6 +122,9 @@ class CreateProduct(QWidget):
             barcode=self.line_edits['barcode'].value(),
             image=self.image_path
         )
+        self.close()
+
+    def cancel_add(self):
         self.close()
 
     def closeEvent(self, event) -> None:
