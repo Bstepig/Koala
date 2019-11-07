@@ -1,0 +1,49 @@
+#sidebar {
+    background-color: #F9F9F9;
+    border-right: 1px solid #E6E6E6;
+    font: 400 16px Montserrat;
+}
+
+#header {
+    margin: 16px 20px 0 20px;
+}
+
+#sidebar_title {
+    font-size: 14px;
+    color: #474747;
+}
+
+#plus {
+    font-size: 14px;
+    color: #000000;
+    Text-align: right;
+    max-width: 20px;
+}
+
+#search {
+    font-style: italic;
+    border-radius: 18px;
+    border: 1px solid #E6E6E6;
+    background: #FFFFFF;
+    padding: 6px 15px;
+    height: 22px;
+}
+
+#product {
+    border-bottom: 1px solid #E6E6E6;
+}
+
+#product_title {
+    font-weight: 500;
+    font-size: 15px;
+}
+
+#product_price {
+    font-weight: 500;
+    font-size: 16px;
+}
+
+#product_count {
+    color: #474747;
+    font-size: 13px;
+}

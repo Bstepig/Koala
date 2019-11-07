@@ -1,0 +1,15 @@
+#image {
+    margin-right: 15px;
+}
+
+#title, #price, #count {
+    font-size: 14px;
+    font-weight: 500;
+    color: #000000;
+}
+
+#total {
+    font-size: 14px;
+    font-weight: 700;
+    color: #000000;
+}

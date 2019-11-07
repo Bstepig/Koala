@@ -1,0 +1,49 @@
+* {
+    font: 400 16px Montserrat;
+}
+
+#mainWindow {
+    background: #ffffff;
+}
+
+#navbar {
+    background: #F9F9F9;
+    border: 1px solid #E6E6E6;
+}
+
+QFrame, QWidget {
+    background: transparent;
+}
+
+QScrollArea {
+    background: transparent;
+    border: none;
+}
+
+QScrollBar:vertical {
+    background: transparent;
+    width: 10px;
+    margin: 10px 0 10px 5px;
+}
+
+QScrollBar::handle:vertical {
+    border-radius: 2px;
+    background: #E6E6E6;
+    min-height: 20px;
+}
+
+QScrollBar::handle:active {
+    background: #474747;
+}
+
+QScrollBar::add-line:vertical {
+    height: 0px;
+    subcontrol-position: bottom;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::sub-line:vertical {
+    height: 0 px;
+    subcontrol-position: top;
+    subcontrol-origin: margin;
+}

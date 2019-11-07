@@ -1,0 +1,13 @@
+#user, #shop {
+    font-size: 13px;
+    color: #363636;
+    font-weight: 500;
+}
+
+
+.navbar_btn {
+    border: none;
+    background: transparent;
+    color: #474747;
+    cursor: pointer;
+}
