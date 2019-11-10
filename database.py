@@ -3,6 +3,7 @@
 import datetime
 import json
 import sqlite3
+import sys
 from sqlite3 import Connection
 from typing import Tuple, List
 
@@ -21,9 +22,12 @@ def execute(*args, **kwargs):
             *args, **kwargs
         )
         con.commit()
-    except (NameError, sqlite3.Error) as error:
-        Exception(error)
-        raise Exception("Problems with database")
+    except ValueError as error:
+        print('ERROR:', error)
+        raise Exception("Problems with database", sys.exc_info()[0])
+    except:
+        print(sys.exc_info()[0])
+        raise Exception("Problems with database", sys.exc_info()[0])
 
 
 def connect(path: str):
@@ -39,25 +43,36 @@ def init(dbname: str):
     create_product_images_table()
     create_products_table()
     create_sales_history_table()
+    create_sold_product_table()
     create_cart_table()
 
 
 def create_sales_history_table():
     execute(
         """CREATE TABLE IF NOT EXISTS sales_history (
-        id INTEGER PRIMARY KEY,
-        products TEXT NOT NULL,
+        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
         time TIMESTAMP NOT NULL
+        )""")
+
+
+def create_sold_product_table():
+    execute(
+        """CREATE TABLE IF NOT EXISTS sold_products (
+        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        product_id INTEGER NOT NULL,
+        operation_id INTEGER NOT NULL,
+        count REAL NOT NULL DEFAULT 0,
+        selling_price REAL NOT NULL
         )""")
 
 
 def create_products_table():
     execute(
         """CREATE TABLE IF NOT EXISTS products (
-        id INTEGER PRIMARY KEY,
+        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
         name TEXT NOT NULL UNIQUE,
         description TEXT,
-        count INT NOT NULL DEFAULT 0,
+        count REAL NOT NULL DEFAULT 0,
         purchase_price REAL,
         selling_price REAL NOT NULL,
         units TEXT DEFAULT шт,
@@ -81,13 +96,13 @@ def create_cart_table():
     execute(
         """CREATE TABLE IF NOT EXISTS cart (
         product_id INTEGER NOT NULL,
-        count INT NOT NULL DEFAULT 0,
-        price INT NOT NULL
+        count FLOAT NOT NULL DEFAULT 0,
+        price FLOAT NOT NULL
         )"""
     )
 
 
-def add2cart(product_id: int, count: int = 1, price: int = None) -> None:
+def add2cart(product_id: int, count: float = 1, price: float = None) -> None:
     if price is None:
         price = get_product(product_id)._selling_price
     execute(
@@ -97,7 +112,7 @@ def add2cart(product_id: int, count: int = 1, price: int = None) -> None:
     )
 
 
-def update_cart_product(_id, count: int, price: int) -> None:
+def update_cart_product(_id, count: float, price: float) -> None:
     execute(
         """UPDATE cart SET count = ?, price = ?
         WHERE id = ?
@@ -135,7 +150,7 @@ def get_product(_id: int) -> Product:
     return Product(*c.fetchall()[0])
 
 
-def add_product(name: str = "", description: str = "", count: int = 0, image: str = "", purchase_price: float = 0,
+def add_product(name: str = "", description: str = "", count: float = 0, image: str = "", purchase_price: float = 0,
                 selling_price: float = 0, units: str = "шт", barcode: int = 0):
     image = open(image, 'rb').read()
     execute(
@@ -146,7 +161,15 @@ def add_product(name: str = "", description: str = "", count: int = 0, image: st
     add_product_image(get_last_id(), image)
 
 
-def update_product(_id: int, name: str = "", description: str = "", count: int = 0, image: str = "",
+def add_sold_product(product_id: int, operation_id: int, count: float, selling_price: float):
+    execute(
+        """INSERT INTO sold_products (product_id, operation_id, count, selling_price)
+        VALUES (?, ?, ?, ?)
+        """, (product_id, operation_id, count, selling_price)
+    )
+
+
+def update_product(_id: int, name: str = "", description: str = "", count: float = 0, image: str = "",
                    purchase_price: float = 0,
                    selling_price: float = 0, units: str = "шт", barcode: int = 0):
     image = open(image, 'rb').read()
@@ -163,11 +186,11 @@ def delete_product(_id: int):
     execute("""DELETE FROM products WHERE id = ?""", _id)
 
 
-def get_last_id() -> int:
+def get_last_id(table: str = 'products') -> int:
     global con
     c = con.cursor()
     c.execute(
-        """SELECT seq FROM sqlite_sequence WHERE name="products" """
+        """SELECT seq FROM sqlite_sequence WHERE name=? """, (table,)
     )
     return c.fetchall()[0][0]
 
@@ -181,20 +204,25 @@ def get_cart() -> Tuple[Product]:
     out_cart = []
     for x in cart:
         p = get_product(x[0])
-        p.count = x[1]
-        p.selling_price = x[2]
+        p._count = x[1]
+        p._selling_price = x[2]
         out_cart.append(p)
     return tuple(out_cart)
 
 
-def sell(cart: List[Product]):
-    products = json.dumps(cart)
+# TODO: Try to make that efficient
+def sell():
     time = datetime.datetime.now()
     execute(
-        """INSERT INTO sales_history (products, time)
-        VALUES (?, ?)
-        """, (products, time)
+        """INSERT INTO sales_history (time)
+        VALUES (?)
+        """, (time,)
     )
+    # TODO: operation_id getting error fix
+    # operation_id = get_last_id('sales_history')
+    # for product in get_cart():
+    #     add_sold_product(product.id, operation_id, product._count, product._selling_price)
+    execute("DELETE FROM cart")
 
 
 def get_sales_history():
@@ -204,8 +232,7 @@ def get_sales_history():
         """SELECT * FROM sales_history"""
     )
     history = c.fetchall()
-    return tuple(map(lambda sale: Sale(time=sale.time, _id=sale.id,
-                                       products=json.loads(sale.products)), history))
+    return tuple(map(lambda sale: Sale(time=sale.time, _id=sale.id)))
 
 
 # init('test')

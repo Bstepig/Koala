@@ -20,13 +20,13 @@ QScrollArea {
     border: none;
 }
 
-QScrollBar:vertical {
+QScrollBar {
     background: transparent;
     width: 10px;
     margin: 10px 0 10px 5px;
 }
 
-QScrollBar::handle:vertical {
+QScrollBar::handle {
     border-radius: 2px;
     background: #E6E6E6;
     min-height: 20px;
@@ -36,13 +36,13 @@ QScrollBar::handle:active {
     background: #474747;
 }
 
-QScrollBar::add-line:vertical {
+QScrollBar::add-line {
     height: 0px;
     subcontrol-position: bottom;
     subcontrol-origin: margin;
 }
 
-QScrollBar::sub-line:vertical {
+QScrollBar::sub-line {
     height: 0 px;
     subcontrol-position: top;
     subcontrol-origin: margin;

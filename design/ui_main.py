@@ -24,14 +24,15 @@ class UI_Main(QFrame):
         self.side_layout = QVBoxLayout()
         self.side = QFrame()
 
+        self.navbar = NavbarWidget()
+        self.payment = PaymentWidget()
+
         self.initUI()
 
     def initUI(self):
 
         self.setWindowTitle('Koala')
         self.setObjectName('mainWindow')
-
-        self.navbar = NavbarWidget()
 
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.layout.setSpacing(0)
@@ -46,8 +47,6 @@ class UI_Main(QFrame):
 
         self.setLayout(self.layout)
 
-        self.payment = PaymentWidget()
-
         self.side_layout.setContentsMargins(0, 0, 0, 0)
         self.side_layout.setSpacing(0)
         self.side_layout.addWidget(self.table, 1)
@@ -61,13 +60,12 @@ class UI_Main(QFrame):
 
         self.layout.addLayout(content)
 
-        # self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
-
         self.setLayout(self.layout)
         self.setMinimumHeight(300)
         self.setMinimumWidth(600)
         self.resize(800, 400)
         self.show()
+
         for i in range(self.sidebar.products_layout.count() - 1):
             self.sidebar.products_layout.itemAt(i).widget().clicked.connect(self.add2cart)
 
@@ -75,8 +73,7 @@ class UI_Main(QFrame):
         self.login_form.closed.connect(self.close_login_form)
         QtCore.QMetaObject.connectSlotsByName(self)
 
-        self.setStyleSheet(get_styles('style'))
-        self.setStyleSheet(get_styles('modal-container'))
+        self.setStyleSheet(get_styles('style') + get_styles('modal-container'))
 
     def add2cart(self):
         pass

@@ -20,7 +20,6 @@ class SidebarWidget(QFrame):
         self.layout = QVBoxLayout()
         self.products = QWidget()
         self.scroll = QScrollArea()
-        self.sell_btn = QPushButton()
 
         self.initUI()
 
@@ -59,16 +58,12 @@ class SidebarWidget(QFrame):
 
         self.products_layout.addStretch(1)
 
-        self.sell_btn.setText('Оплатить')
-
-        self.layout.addWidget(self.sell_btn)
-
         self.setFixedWidth(300)
         self.setLayout(self.layout)
         self.setObjectName('sidebar')
+
         load_fonts()
-        self.setStyleSheet(get_styles('style'))
-        self.setStyleSheet(get_styles('sidebar'))
+        self.setStyleSheet(get_styles('style') + get_styles('sidebar'))
 
 
 if __name__ == '__main__':

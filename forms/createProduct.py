@@ -138,7 +138,6 @@ class CreateProduct(QDialog):
 
 
 def main(*arg):
-    database.connect('test')
     app = QApplication(*arg)
     ex = CreateProduct()
     sys.exit(app.exec_())

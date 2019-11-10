@@ -6,6 +6,12 @@ QLabel {
     font-weight: 500;
 }
 
+#add_product {
+    background: #fff;
+    border-radius: 20px;
+    padding: 20px;
+}
+
 
 QPushButton {
     border: 2px solid #E6E6E6;

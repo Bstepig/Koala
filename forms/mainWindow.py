@@ -5,8 +5,8 @@ import sys
 from typing import List
 
 from PyQt5 import QtCore
-from PyQt5.QtGui import QResizeEvent, QColor
-from PyQt5.QtWidgets import QApplication, QWidget, QFrame, QGridLayout, QVBoxLayout, QHBoxLayout, \
+from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QApplication, QWidget, QFrame, QVBoxLayout, QHBoxLayout, \
     QGraphicsDropShadowEffect
 
 import database
@@ -17,14 +17,25 @@ from utils import load_fonts
 
 class Main(UI_Main):
 
-    cart: List[Product] = []
     resized = QtCore.pyqtSignal()
     total_price: int = 0
 
     def __init__(self):
         super().__init__()
+
+        self.v = QVBoxLayout()
+        self.h = QHBoxLayout()
+        self.v.addStretch(1)
+        self.h.addStretch(1)
+
+        self.v.addLayout(self.h)
+
+        self.v.addStretch(1)
+        self.h.addStretch(1)
+
         self.modal_container = QFrame(self)
         self.modal_container.setObjectName('modal_container')
+        self.modal_container.setLayout(self.v)
         self.resized.connect(self.on_mainWindow_resized)
         self.open_modal(self.login_form)
 
@@ -35,22 +46,25 @@ class Main(UI_Main):
         self.clear_cart()
         layout = self.table.products_layout
         for i in database.get_cart():
-            # self.update_total_price(i.selling_price * i.count)
+            self.update_total_price(i._selling_price * i._count)
             layout.insertWidget(layout.count() - 1, ProductTableItemWidget(i))
 
     def clear_cart(self):
         self.clear_layout(self.table.products_layout, 1)
+        self.total_price = 0
+        self.update_payment()
 
     def add2cart(self):
         product = self.sender().product
         database.add2cart(product.id)
         layout = self.table.products_layout
-        product.count = 1
-        # self.update_total_price(product.selling_price * product.count)
+        product._count = 1
+        self.update_total_price(product._selling_price * product._count)
         layout.insertWidget(0, ProductTableItemWidget(product))
 
     def update_total_price(self, add: int):
         self.total_price += add
+        self.update_payment()
 
     def on_mainWindow_resized(self):
         if self.modal_container:
@@ -67,7 +81,17 @@ class Main(UI_Main):
 
     @QtCore.pyqtSlot(int)
     def on_to_pay_value_valueChanged(self, value: int = 0):
-        self.payment.surrender_value.setText(f'{100000 - value}')
+        self.update_payment()
+
+    @QtCore.pyqtSlot()
+    def on_pay_btn_clicked(self):
+        database.sell()
+        self.payment.to_pay_value.setValue(0)
+        self.clear_cart()
+
+    def update_payment(self):
+        self.payment.surrender_value.setText(f'{self.payment.to_pay_value.value() - self.total_price}')
+        self.payment.total_value.setText(f'{self.total_price}')
 
     def open_add_product(self):
         self.add_product_form.show()
@@ -90,17 +114,9 @@ class Main(UI_Main):
     def open_modal(self, modal: QWidget):
         self.modal_container.setFixedSize(self.size())
         self.modal_container.show()
-        self.modal_container.setObjectName("modal_container")
-        v = QVBoxLayout()
-        h = QHBoxLayout()
-        v.addStretch(1)
-        h.addStretch(1)
 
-        v.addLayout(h)
-        h.addWidget(modal, 1)
-
-        v.addStretch(1)
-        h.addStretch(1)
+        self.h.insertWidget(1, modal, 1)
+        self.h.itemAt(1).widget().show()
 
         shadow = QGraphicsDropShadowEffect()
         shadow.setColor(QColor(0, 0, 0, 100))
@@ -108,8 +124,6 @@ class Main(UI_Main):
         shadow.setOffset(0, 10)
 
         modal.setGraphicsEffect(shadow)
-
-        self.modal_container.setLayout(v)
         modal.setObjectName("modal")
 
     def close_modal(self):
